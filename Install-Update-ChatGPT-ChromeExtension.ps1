@@ -4,7 +4,7 @@
 Downloads and prepares the official ChatGPT Chrome extension for Load unpacked.
 .DESCRIPTION
 Requires Windows and PowerShell 7.2+. Only manifest.key may be changed.
-The original CSP, fonts, scripts and native messaging configuration are untouched.
+The original CSP, scripts and native messaging configuration are untouched.
 #>
 [CmdletBinding()]
 param(

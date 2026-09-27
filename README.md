@@ -12,7 +12,7 @@ Download and update an unpacked copy of the official ChatGPT Chrome extension th
 | Source | `https://clients2.google.com/service/update2/crx` |
 | Requirements | Windows, Chrome, **PowerShell 7.2+ (`pwsh`)** |
 | Scope | Prepare files, preserve ID, retain backups |
-| Unchanged | Fonts, CSP, JavaScript, native hosts, registry, Chrome policies |
+| Unchanged | CSP, JavaScript, native hosts, registry, Chrome policies |
 
 ## Quick start
 

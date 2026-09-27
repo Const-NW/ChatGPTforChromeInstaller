@@ -8,7 +8,7 @@ This community helper downloads the official CRX from Google update service and 
 
 The original user reported that the Web Store page was unavailable or installation failed, and an unpacked copy had a different ID. The store failure's cause is unconfirmed; availability can vary. ID mismatch may affect integrations. Preserving the ID does not guarantee desktop detection, sign-in or service access.
 
-**Fonts and CSP are not patched.** CSP is the browser policy limiting which resources an extension can load. The script leaves it unchanged and does not fix existing CSP errors. Only the public `manifest.key` is added if absent; JavaScript, native hosts, registry, profiles and browser policies are untouched.
+**CSP is not patched.** CSP is the browser policy limiting which resources an extension can load. The script leaves it unchanged and does not fix existing CSP errors. Only the public `manifest.key` is added if absent; JavaScript, native hosts, registry, profiles and browser policies are untouched.
 
 ## Requirements and installation
 
