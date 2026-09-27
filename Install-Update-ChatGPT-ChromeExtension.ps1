@@ -114,6 +114,19 @@ public static class ChatGptCrx {
 '@
 }
 
+function ConvertTo-ExtensionVersion([string] $Value) {
+    # Chrome treats missing components as zero: 1.2 == 1.2.0 == 1.2.0.0.
+    if ($Value -notmatch '^(0|[1-9][0-9]{0,4})(\.(0|[1-9][0-9]{0,4})){0,3}$') {
+        throw "Invalid extension version: $Value"
+    }
+    $parts = @($Value.Split('.') | ForEach-Object { [int]$_ })
+    if (@($parts | Where-Object { $_ -gt 65535 }).Count -or -not @($parts | Where-Object { $_ -ne 0 }).Count) {
+        throw "Invalid extension version: $Value"
+    }
+    while ($parts.Count -lt 4) { $parts += 0 }
+    return [version]($parts -join '.')
+}
+
 function Get-ChromeVersion {
     $candidates = @(
         "$env:ProgramFiles/Google/Chrome/Application/chrome.exe",
@@ -152,7 +165,7 @@ function Invoke-ExtensionInstall {
             if (-not (Test-Path -LiteralPath $oldManifest -PathType Leaf)) { throw 'Refusing to replace a folder without manifest.json.' }
             $old = Get-Content -LiteralPath $oldManifest -Raw | ConvertFrom-Json -AsHashtable
             if (-not $old.key -or [ChatGptCrx]::Id([Convert]::FromBase64String($old.key)) -ne $extensionId) {
-                throw 'Existing folder has no matching key. Use a new empty InstallDir; migrate manually.'
+                throw 'Existing folder has no matching key. Use an InstallDir that does not exist yet; migrate manually.'
             }
         }
         [IO.Directory]::CreateDirectory($stage) | Out-Null
@@ -170,9 +183,10 @@ function Invoke-ExtensionInstall {
         $raw = [IO.File]::ReadAllText($manifestPath)
         $manifest = ConvertFrom-Json -InputObject $raw -AsHashtable
         if (-not $manifest.version -or $manifest.manifest_version -ne 3) { throw 'Unexpected manifest.' }
-        $newVersion = [version]$manifest.version
-        if ($old -and $newVersion -lt [version]$old.version) { throw 'Refusing to downgrade the installed extension.' }
-        if ($old -and $newVersion -eq [version]$old.version -and -not $Force) {
+        $newVersion = ConvertTo-ExtensionVersion $manifest.version
+        $oldVersion = if ($old) { ConvertTo-ExtensionVersion $old.version } else { $null }
+        if ($old -and $newVersion -lt $oldVersion) { throw 'Refusing to downgrade the installed extension.' }
+        if ($old -and $newVersion -eq $oldVersion -and -not $Force) {
             Write-Host "Already current: $newVersion. Use -Force to restore official files at the same version."
             return
         }

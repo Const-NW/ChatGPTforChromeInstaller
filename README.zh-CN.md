@@ -1,10 +1,12 @@
-# ChatGPT Chrome 扩展安装与更新工具
+# ChatGPT Chrome 扩展无法安装？应用商店不可用时的安装与更新
 
 [首页](README.md) · [Русский](README.ru.md) · [English](README.en.md) · **简体中文**
 
-## 用途
+## Chrome 应用商店无法访问，或扩展在所在地区不可用？
 
-本脚本通过 Google 更新服务下载官方 CRX 文件，并准备可通过“加载已解压的扩展程序”安装的文件，保持扩展 ID 为 `hehggadaopoacecdllhhajmbjkdcmajg`。这是社区项目，并非 OpenAI 或 Google 产品。
+如果 ChatGPT Chrome 扩展无法安装、Chrome 应用商店无法访问，或页面提示所在国家/地区不可用，本 Windows PowerShell 工具提供通过 Google 更新服务下载官方 CRX 扩展包的方法。脚本验证开发者签名，保持扩展 ID `hehggadaopoacecdllhhajmbjkdcmajg`，并在更新时保留备份。随后在 Chrome 中手动加载已解压的扩展程序。这是社区项目，并非 OpenAI 或 Google 产品。
+
+此方法适用于商店页面不可用、但 Google 下载服务仍可访问的情况，不保证绕过地区限制，也不保证能够访问 ChatGPT 服务。
 
 最初的用户报告称，Chrome 应用商店页面无法访问或无法安装，而解压后的副本获得了不同的 ID。商店故障的原因尚未确定；不同环境的可用性可能不同。ID 不一致可能影响集成。保持 ID 并不保证桌面应用能够识别扩展，也不保证登录或服务访问。
 
@@ -67,7 +69,7 @@ pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1 -InstallDir '
 pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1 -ChromeVersion '153.0.8010.54'
 ```
 
-上述版本仅为示例，并非要求使用的版本，也不保证是最新版本。已有目标目录必须包含具有匹配公钥的清单，否则脚本会拒绝覆盖。迁移旧副本时，请选择新目录并手动处理。在测试新副本期间可停用旧副本；删除扩展可能导致其本地数据丢失。如果应用商店版本已使用同一 ID，请先在 Chrome 中手动处理现有安装。
+上述版本仅为示例，并非要求使用的版本，也不保证是最新版本。已有目标目录必须包含具有匹配公钥的清单，否则脚本会拒绝覆盖。迁移旧副本时，请指定尚不存在的目录路径并手动处理；预先创建的空目录也会被拒绝。在测试新副本期间可停用旧副本；删除扩展可能导致其本地数据丢失。如果应用商店版本已使用同一 ID，请先在 Chrome 中手动处理现有安装。
 
 ## 验证与恢复
 
@@ -76,6 +78,29 @@ pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1 -ChromeVersio
 每次替换都会在旁边保留 `*.backup-<时间戳>-<后缀>` 备份目录。准备阶段失败不会改变旧安装；最后移动失败时，脚本会尝试恢复旧目录。备份不会自动删除。
 
 手动恢复时，先停用扩展，把有问题的目录移到其他位置，将所需备份改回原来的完整安装路径，然后重新加载并启用扩展。备份仅包含扩展文件，不包含 Chrome 用户配置数据。
+
+## 安装常见问答：ChatGPT Chrome 扩展无法安装
+
+### Chrome 应用商店无法访问时，如何安装 ChatGPT 扩展？
+运行上面的 PowerShell 代码块，然后选择“加载已解压的扩展程序”。无需打开商店页面，但 Google 下载服务必须可访问。直接运行命令还需要访问 `raw.githubusercontent.com`；该地址不可用时，可使用事先下载的仓库副本。
+
+### 扩展在所在国家或地区不可用，这个方法有效吗？
+可以尝试通过 Google 更新服务下载。但限制也可能影响扩展包，因此无法保证成功。安装扩展不会解除账号限制，也不会自动开放 ChatGPT 服务访问。最初的商店故障原因尚未确定。
+
+### “添加至 Chrome”无法安装，怎么办？
+先更新 Chrome，并使用电脑上的普通用户配置文件，而不是无痕或访客模式。如果问题出在商店页面，其他下载方式可能有帮助。如果管理员禁止安装，请联系管理员。参见 [Google 安装故障排除](https://support.google.com/chrome_webstore/answer/1698338?hl=zh-Hans)。
+
+### 下载的是官方扩展还是第三方替代品？
+只从 Google 下载 ID 为 `hehggadaopoacecdllhhajmbjkdcmajg` 的扩展包，并在解压前验证开发者签名。安装工具本身是社区项目，不会安装其他同名扩展。
+
+### 为什么 ChatGPT 或 Codex 无法识别已解压的扩展？
+扩展 ID 不一致是可能原因之一。公开的 `manifest.key` 用于保持原始 ID。本工具不修复桌面应用设置或本地消息连接。
+
+### 如何不打开 Chrome 应用商店就更新？
+再次运行命令，然后点击 Reload。Google 下载服务必须可访问。已解压的扩展需要手动更新。
+
+### 无法识别 pwsh，怎么办？
+安装 PowerShell 7.2 或更新版本，再打开新的终端。Windows PowerShell 5.1 无法运行安装脚本本身。
 
 ## 常见问题
 

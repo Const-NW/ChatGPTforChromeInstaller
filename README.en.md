@@ -1,10 +1,12 @@
-# ChatGPT Chrome extension installer
+# Install ChatGPT Chrome Extension When Chrome Web Store Is Unavailable
 
 [Home](README.md) · [Русский](README.ru.md) · **English** · [简体中文](README.zh-CN.md)
 
-## Purpose
+## Cannot install the ChatGPT Chrome extension?
 
-This community helper downloads the official CRX from Google update service and prepares an unpacked installation with ID `hehggadaopoacecdllhhajmbjkdcmajg`. It is not an OpenAI or Google product.
+If Chrome Web Store is unavailable, the ChatGPT extension is not available in your region, or the Add to Chrome installation fails, this Windows PowerShell installer provides an alternative download path through Google update service. It prepares an unpacked copy of the official CRX with extension ID `hehggadaopoacecdllhhajmbjkdcmajg`, verifies the developer signature and keeps backups when updating. It is a community tool, not an OpenAI or Google product.
+
+The method requires Google's package service to remain reachable. It does not guarantee a bypass of regional restrictions or access to ChatGPT itself.
 
 The original user reported that the Web Store page was unavailable or installation failed, and an unpacked copy had a different ID. The store failure's cause is unconfirmed; availability can vary. ID mismatch may affect integrations. Preserving the ID does not guarantee desktop detection, sign-in or service access.
 
@@ -67,7 +69,7 @@ pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1 -InstallDir '
 pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1 -ChromeVersion '153.0.8010.54'
 ```
 
-The version shown is an example, not a requirement or a promise of the latest version. Existing destinations must have a manifest with the matching key. Otherwise, use a new folder and migrate manually. Disable the old copy while testing the new one; removing an extension may delete its local data. An existing store installation with the same ID must be handled manually in Chrome before loading this copy.
+The version shown is an example, not a requirement or a promise of the latest version. Existing destinations must have a manifest with the matching key. Otherwise, specify a destination that does not exist yet and migrate manually; a pre-created empty folder is also rejected. Disable the old copy while testing the new one; removing an extension may delete its local data. An existing store installation with the same ID must be handled manually in Chrome before loading this copy.
 
 ## Verification and recovery
 
@@ -76,6 +78,29 @@ Before replacement, the script checks CRX3 structure, signed ID, the ID derived 
 Every replaced installation is retained in a sibling `*.backup-<timestamp>-<suffix>` folder. Preparation failures preserve the old installation; failure of the final move triggers a restoration attempt. Backups are never automatically deleted.
 
 To recover manually, disable the extension, move the failed folder aside, rename a backup to the exact original installation path, then reload and enable the extension. Backups contain extension files, not Chrome profile data.
+
+## FAQ: ChatGPT Chrome extension won't install
+
+### How do I install ChatGPT when Chrome Web Store is unavailable?
+Run the PowerShell block above, then use Load unpacked. The store page is not needed, but Google's package service must be reachable. The direct command also needs `raw.githubusercontent.com`; if it is unavailable, use an already downloaded repository copy.
+
+### What if the extension is not available in my country or region?
+You can try the Google update service download. Restrictions may also affect the package, so success is not guaranteed. Installing it does not remove account restrictions or unlock ChatGPT access. The original store failure's cause is unconfirmed.
+
+### Add to Chrome does not work. Will this fix it?
+First update Chrome and use a regular desktop profile, not Incognito or Guest mode. This alternative download path may help if the store page is the problem. Administrator restrictions require your administrator's help. See [Google's installation troubleshooting](https://support.google.com/chrome_webstore/answer/1698338?hl=en).
+
+### Is this the official ChatGPT extension or a third-party alternative?
+Only Google's package for `hehggadaopoacecdllhhajmbjkdcmajg` is downloaded; its developer signature is verified before extraction. The installer itself is a community project and does not install similarly named extensions.
+
+### Why does ChatGPT or Codex not detect my unpacked extension?
+An extension ID mismatch is one possible cause. The public `manifest.key` preserves the original ID. The installer does not repair desktop setup or native messaging.
+
+### How do I update without the Chrome Web Store page?
+Rerun the command and click Reload in Chrome. Google's package service must remain reachable. Unpacked updates are manual.
+
+### Why is pwsh not recognized?
+Install PowerShell 7.2+ and open a new terminal. Windows PowerShell 5.1 cannot run the installer itself.
 
 ## Troubleshooting
 

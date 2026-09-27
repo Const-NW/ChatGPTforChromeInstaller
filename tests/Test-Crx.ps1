@@ -18,6 +18,13 @@ function Varint([ulong] $Value) {
 function Field([int] $Number, [byte[]] $Data) {
     return ,[byte[]]((Varint ($Number * 8 + 2)) + (Varint $Data.Length) + $Data)
 }
+if ((ConvertTo-ExtensionVersion '1.2') -ne (ConvertTo-ExtensionVersion '1.2.0')) { throw 'Equivalent versions differ' }
+if ((ConvertTo-ExtensionVersion '1') -ne (ConvertTo-ExtensionVersion '1.0.0.0')) { throw 'Single component version failed' }
+if ((ConvertTo-ExtensionVersion '1.2') -le (ConvertTo-ExtensionVersion '1.1.9.9999')) { throw 'Version ordering failed' }
+Write-Host 'PASS: Chrome version equality and ordering'
+foreach ($invalid in @('0','0.0.0.0','01.2','1.65536','1.2.3.4.5','1.-1','1.beta','')) {
+    Assert-Rejected { ConvertTo-ExtensionVersion $invalid } "invalid version '$invalid'"
+}
 $temp = Join-Path ([IO.Path]::GetTempPath()) ('chatgpt-crx-test-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($temp) | Out-Null
 try {

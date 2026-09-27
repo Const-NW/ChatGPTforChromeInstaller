@@ -1,8 +1,12 @@
-# ChatGPT for Chrome — Installer & Updater
+# ChatGPT Chrome Extension Installer — Chrome Web Store Unavailable
 
 **[Русский](README.ru.md) · [English](README.en.md) · [简体中文](README.zh-CN.md)**
 
-Download and update an unpacked copy of the official ChatGPT Chrome extension through Google's update service.
+Cannot install the ChatGPT Chrome extension because Chrome Web Store is unavailable, the listing is not available in your region, or installation fails? This Windows PowerShell installer downloads the official CRX from Google update service, verifies its signature, and prepares an unpacked installation with the original extension ID.
+
+This method can help when the store page fails but Google's package download service is still reachable. It is not a guaranteed workaround for country restrictions or access to ChatGPT itself.
+
+[Не устанавливается расширение ChatGPT в Chrome? Инструкция на русском](README.ru.md) · [ChatGPT 扩展无法安装或所在地区不可用？简体中文指南](README.zh-CN.md)
 
 > Community project; not an OpenAI or Google product. No extension binaries are hosted here.
 
@@ -46,6 +50,23 @@ pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1
 First install: open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the folder printed by the script. Confirm the ID above. To update, run the same command and click **Reload** on the extension card.
 
 Default folder: `%LOCALAPPDATA%\ChatGPTforChromeInstaller\hehggadaopoacecdllhhajmbjkdcmajg`.
+
+## FAQ: ChatGPT Chrome extension won't install
+
+### Extension not available in your country or region?
+Try the download command only if Google's package service is reachable. Regional restrictions may also affect that service; this tool does not guarantee availability or unlock access to ChatGPT.
+
+### Chrome Web Store unavailable or Add to Chrome not working?
+First update Chrome and use a regular desktop profile, not Incognito or Guest mode. If the store page is the problem, this alternative download path may help. Administrator restrictions require your administrator's help. See [Google's installation troubleshooting](https://support.google.com/chrome_webstore/answer/1698338?hl=en).
+
+### Why does ChatGPT or Codex not detect an unpacked extension?
+A different extension ID is one possible cause. The public `manifest.key` preserves the original ID; this script does not repair desktop setup or native messaging.
+
+### How do I update without the Chrome Web Store page?
+Rerun the command and click Reload in Chrome. Package downloads must remain accessible. Updates are manual.
+
+### Is this an official installer?
+The installer is a community project. It downloads only Google's package for `hehggadaopoacecdllhhajmbjkdcmajg`, verifies the developer signature and does not install similarly named third-party extensions.
 
 ## Why this exists
 
