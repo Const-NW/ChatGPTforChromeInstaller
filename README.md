@@ -14,7 +14,28 @@ Download and update an unpacked copy of the official ChatGPT Chrome extension th
 | Scope | Prepare files, preserve ID, retain backups |
 | Unchanged | CSP, JavaScript, native hosts, registry, Chrome policies |
 
-## Quick start
+## Run directly from PowerShell
+
+Paste the following block into PowerShell. It downloads the latest installer from this repository, runs it with PowerShell 7.2+ and removes the temporary script. No manual download is needed. PowerShell 7.2+ must already be installed (`pwsh` available in PATH); the block can also be pasted into Windows PowerShell 5.1.
+
+```powershell
+& {
+    $pwsh = Get-Command pwsh -ErrorAction Stop
+    $installer = Join-Path $env:TEMP ("ChatGPT-installer-" + [guid]::NewGuid() + ".ps1")
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension.ps1' -OutFile $installer -ErrorAction Stop
+        & $pwsh.Source -NoProfile -ExecutionPolicy Bypass -File $installer
+        if ($LASTEXITCODE -ne 0) { throw "Installer failed (exit code $LASTEXITCODE)." }
+    }
+    finally {
+        if (Test-Path -LiteralPath $installer) { Remove-Item -LiteralPath $installer -Force }
+    }
+}
+```
+
+The command executes code from this repository's `main` branch. `ExecutionPolicy Bypass` applies only to the child process; it does not change the saved execution policy. To pass options, append `-Force` or `-InstallDir 'C:\Install\ChatGPT\hehggadaopoacecdllhhajmbjkdcmajg'` after `-File $installer`. Rerun the block to update, then click **Reload** in Chrome. On first install, follow the **Load unpacked** steps below.
+
+## Install from a downloaded copy
 
 Download this repository (**Code → Download ZIP**), extract it and run from its folder:
 

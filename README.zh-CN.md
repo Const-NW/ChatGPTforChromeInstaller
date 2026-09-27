@@ -31,6 +31,27 @@
 
 请保留此文件夹，Chrome 会直接使用其中的文件。浏览器中的注册操作需要手动完成。这不是由应用商店管理的安装。
 
+## 在 PowerShell 中直接运行，无需手动下载
+
+将整个代码块粘贴到 PowerShell 中。它会从本仓库下载最新安装脚本，使用 PowerShell 7.2+ 运行，然后删除临时脚本。必须事先安装 PowerShell 7.2+，并确保 PATH 中可以找到 `pwsh`。此代码块也可粘贴到 Windows PowerShell 5.1 中。
+
+```powershell
+& {
+    $pwsh = Get-Command pwsh -ErrorAction Stop
+    $installer = Join-Path $env:TEMP ("ChatGPT-installer-" + [guid]::NewGuid() + ".ps1")
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension.ps1' -OutFile $installer -ErrorAction Stop
+        & $pwsh.Source -NoProfile -ExecutionPolicy Bypass -File $installer
+        if ($LASTEXITCODE -ne 0) { throw "Installer failed (exit code $LASTEXITCODE)." }
+    }
+    finally {
+        if (Test-Path -LiteralPath $installer) { Remove-Item -LiteralPath $installer -Force }
+    }
+}
+```
+
+此命令执行本仓库 `main` 分支中的代码。`ExecutionPolicy Bypass` 仅对启动的子进程有效，不修改已保存的执行策略。需要传递参数时，在 `-File $installer` 后添加 `-Force` 或 `-InstallDir 'C:\Install\ChatGPT\hehggadaopoacecdllhhajmbjkdcmajg'`。更新时再次运行代码块，然后在 Chrome 中点击**重新加载 / Reload**。首次安装仍需完成上文的**加载已解压的扩展程序**步骤。
+
 ## 更新与参数
 
 再次运行同一命令，然后在扩展卡片上点击**重新加载 / Reload**。更新需要手动进行，脚本不会创建计划任务。相同版本默认跳过；即使指定 `-Force` 也不允许降级。

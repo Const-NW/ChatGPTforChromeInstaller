@@ -31,6 +31,27 @@
 
 Не удаляйте эту папку: Chrome использует файлы из неё. Подключение в браузере выполняется вручную. Это распакованная установка, а не установка под управлением Web Store.
 
+## Запуск из PowerShell без ручного скачивания
+
+Вставьте блок целиком в PowerShell: он скачает актуальный установщик из этого репозитория, запустит его в PowerShell 7.2+ и удалит временный скрипт. PowerShell 7.2+ должен быть уже установлен, а команда `pwsh` доступна в PATH (списке папок, где система ищет команды). Сам блок можно вставить и в Windows PowerShell 5.1.
+
+```powershell
+& {
+    $pwsh = Get-Command pwsh -ErrorAction Stop
+    $installer = Join-Path $env:TEMP ("ChatGPT-installer-" + [guid]::NewGuid() + ".ps1")
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension.ps1' -OutFile $installer -ErrorAction Stop
+        & $pwsh.Source -NoProfile -ExecutionPolicy Bypass -File $installer
+        if ($LASTEXITCODE -ne 0) { throw "Installer failed (exit code $LASTEXITCODE)." }
+    }
+    finally {
+        if (Test-Path -LiteralPath $installer) { Remove-Item -LiteralPath $installer -Force }
+    }
+}
+```
+
+Команда выполняет код из ветки `main` этого репозитория. `ExecutionPolicy Bypass` действует только для запускаемого процесса и не меняет сохранённую политику выполнения. Для передачи параметров добавьте `-Force` или `-InstallDir 'C:\Install\ChatGPT\hehggadaopoacecdllhhajmbjkdcmajg'` после `-File $installer`. При обновлении повторите блок и нажмите **Перезагрузить / Reload** в Chrome. При первой установке выполните описанный выше шаг **Загрузить распакованное**.
+
 ## Обновление и параметры
 
 Повторите ту же команду и нажмите **Перезагрузить / Reload** на карточке расширения. Обновления ручные, задача в планировщике не создаётся. Та же версия пропускается; понижение версии запрещено даже с `-Force`.
