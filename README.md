@@ -2,7 +2,7 @@
 
 **[Русский](README.ru.md) · [English](README.en.md) · [简体中文](README.zh-CN.md)**
 
-Cannot install the ChatGPT Chrome extension because Chrome Web Store is unavailable, the listing is not available in your region, or installation fails? This Windows PowerShell installer downloads the official CRX from Google update service, verifies its signature, and prepares an unpacked installation with the original extension ID.
+Cannot install the ChatGPT Chrome extension because Chrome Web Store is unavailable, the listing is not available in your region, or installation fails? This installer (PowerShell for Windows, zsh script for macOS) downloads the official CRX from Google update service, verifies its signature, and prepares an unpacked installation with the original extension ID.
 
 This method can help when the store page fails but Google's package download service is still reachable. It is not a guaranteed workaround for country restrictions or access to ChatGPT itself.
 
@@ -14,7 +14,7 @@ This method can help when the store page fails but Google's package download ser
 | --- | --- |
 | Extension ID | `hehggadaopoacecdllhhajmbjkdcmajg` |
 | Source | `https://clients2.google.com/service/update2/crx` |
-| Requirements | Windows, Chrome, **PowerShell 7.2+ (`pwsh`)** |
+| Requirements | Windows, Chrome, **PowerShell 7.2+ (`pwsh`)** — or macOS, Chrome (built-in tools only) |
 | Scope | Prepare files, preserve ID, retain backups |
 | Unchanged | CSP, JavaScript, native hosts, registry, Chrome policies |
 
@@ -50,6 +50,18 @@ pwsh -NoProfile -File .\Install-Update-ChatGPT-ChromeExtension.ps1
 First install: open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the folder printed by the script. Confirm the ID above. To update, run the same command and click **Reload** on the extension card.
 
 Default folder: `%LOCALAPPDATA%\ChatGPTforChromeInstaller\hehggadaopoacecdllhhajmbjkdcmajg`.
+
+## macOS
+
+The macOS script uses only tools shipped with macOS (`zsh`, `curl`, `openssl`, `perl`, `unzip`); nothing needs to be installed. Paste into Terminal:
+
+```bash
+installer="$(mktemp -t chatgpt-installer)" && curl -fsSL --proto '=https' -o "$installer" 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension-macOS.sh' && zsh "$installer"; rm -f "$installer"
+```
+
+Or from a downloaded copy: `zsh ./Install-Update-ChatGPT-ChromeExtension-macOS.sh`. Options: `--force`, `--install-dir DIR`, `--chrome-version VERSION`.
+
+Default folder: `~/Library/Application Support/ChatGPTforChromeInstaller/hehggadaopoacecdllhhajmbjkdcmajg`. The script copies the path to the clipboard; in the **Load unpacked** dialog press **Cmd+Shift+G** and paste it.
 
 ## FAQ: ChatGPT Chrome extension won't install
 
