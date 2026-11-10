@@ -4,7 +4,7 @@
 
 ## Chrome 应用商店无法访问，或扩展在所在地区不可用？
 
-如果 ChatGPT Chrome 扩展无法安装、Chrome 应用商店无法访问，或页面提示所在国家/地区不可用，本 Windows PowerShell 工具提供通过 Google 更新服务下载官方 CRX 扩展包的方法。脚本验证开发者签名，保持扩展 ID `hehggadaopoacecdllhhajmbjkdcmajg`，并在更新时保留备份。随后在 Chrome 中手动加载已解压的扩展程序。这是社区项目，并非 OpenAI 或 Google 产品。
+如果 ChatGPT Chrome 扩展无法安装、Chrome 应用商店无法访问，或页面提示所在国家/地区不可用，本工具（Windows 使用 PowerShell，macOS 使用 zsh 脚本）提供通过 Google 更新服务下载官方 CRX 扩展包的方法。脚本验证开发者签名，保持扩展 ID `hehggadaopoacecdllhhajmbjkdcmajg`，并在更新时保留备份。随后在 Chrome 中手动加载已解压的扩展程序。这是社区项目，并非 OpenAI 或 Google 产品。
 
 此方法适用于商店页面不可用、但 Google 下载服务仍可访问的情况，不保证绕过地区限制，也不保证能够访问 ChatGPT 服务。
 
@@ -53,6 +53,32 @@
 ```
 
 此命令执行本仓库 `main` 分支中的代码。`ExecutionPolicy Bypass` 仅对启动的子进程有效，不修改已保存的执行策略。需要传递参数时，在 `-File $installer` 后添加 `-Force` 或 `-InstallDir 'C:\Install\ChatGPT\hehggadaopoacecdllhhajmbjkdcmajg'`。更新时再次运行代码块，然后在 Chrome 中点击**重新加载 / Reload**。首次安装仍需完成上文的**加载已解压的扩展程序**步骤。
+
+## macOS
+
+独立脚本 `Install-Update-ChatGPT-ChromeExtension-macOS.sh` 在 macOS 上执行相同的步骤和验证。它只使用 macOS 自带的工具（`zsh`、`curl`、`openssl`、`perl`、`unzip`），无需安装 PowerShell。脚本会在 `/Applications` 和 `~/Applications` 中查找 Chrome。
+
+将以下命令粘贴到“终端”中：它会下载最新安装脚本、运行并删除临时文件：
+
+```bash
+installer="$(mktemp -t chatgpt-installer)" && curl -fsSL --proto '=https' -o "$installer" 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension-macOS.sh' && zsh "$installer"; rm -f "$installer"
+```
+
+使用已下载的仓库副本：
+
+```bash
+zsh ./Install-Update-ChatGPT-ChromeExtension-macOS.sh
+```
+
+参数（添加在 `"$installer"` 或脚本名之后）：`--force`、`--install-dir 目录`、`--chrome-version 版本`，作用与下文的 `-Force`、`-InstallDir`、`-ChromeVersion` 相同。
+
+默认目录：
+
+```text
+~/Library/Application Support/ChatGPTforChromeInstaller/hehggadaopoacecdllhhajmbjkdcmajg
+```
+
+脚本会将目录路径复制到剪贴板。`~/Library` 在 Finder 对话框中默认隐藏：点击**加载已解压的扩展程序**后，按 **Cmd+Shift+G**，粘贴路径并确认。
 
 ## 更新与参数
 

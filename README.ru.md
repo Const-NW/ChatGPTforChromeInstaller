@@ -4,7 +4,7 @@
 
 ## Chrome Web Store недоступен или расширение недоступно в регионе?
 
-Если расширение ChatGPT не устанавливается из Chrome Web Store, страница магазина недоступна или показывает ограничение для вашего региона, этот установщик для Windows предлагает другой путь загрузки: официальный CRX через Google update service. PowerShell-скрипт проверяет подпись пакета, сохраняет extension ID `hehggadaopoacecdllhhajmbjkdcmajg` и создаёт резервные копии при обновлении. CRX — файл пакета расширения Chrome. Это независимый проект, не продукт OpenAI или Google.
+Если расширение ChatGPT не устанавливается из Chrome Web Store, страница магазина недоступна или показывает ограничение для вашего региона, этот установщик для Windows и macOS предлагает другой путь загрузки: официальный CRX через Google update service. PowerShell-скрипт проверяет подпись пакета, сохраняет extension ID `hehggadaopoacecdllhhajmbjkdcmajg` и создаёт резервные копии при обновлении. CRX — файл пакета расширения Chrome. Это независимый проект, не продукт OpenAI или Google.
 
 Способ может помочь, если страница магазина не работает, но сервис загрузки Google доступен. Обход региональных ограничений и доступ к самому ChatGPT не гарантируются.
 
@@ -53,6 +53,32 @@
 ```
 
 Команда выполняет код из ветки `main` этого репозитория. `ExecutionPolicy Bypass` действует только для запускаемого процесса и не меняет сохранённую политику выполнения. Для передачи параметров добавьте `-Force` или `-InstallDir 'C:\Install\ChatGPT\hehggadaopoacecdllhhajmbjkdcmajg'` после `-File $installer`. При обновлении повторите блок и нажмите **Перезагрузить / Reload** в Chrome. При первой установке выполните описанный выше шаг **Загрузить распакованное**.
+
+## macOS
+
+Отдельный скрипт `Install-Update-ChatGPT-ChromeExtension-macOS.sh` выполняет те же шаги и проверки на macOS. Он использует только встроенные в macOS инструменты (`zsh`, `curl`, `openssl`, `perl`, `unzip`); PowerShell не нужен. Chrome ищется в `/Applications` и `~/Applications`.
+
+Вставьте команду в Терминал: она скачает актуальный установщик, запустит его и удалит временный файл:
+
+```bash
+installer="$(mktemp -t chatgpt-installer)" && curl -fsSL --proto '=https' -o "$installer" 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension-macOS.sh' && zsh "$installer"; rm -f "$installer"
+```
+
+Из скачанной копии репозитория:
+
+```bash
+zsh ./Install-Update-ChatGPT-ChromeExtension-macOS.sh
+```
+
+Параметры (добавляются после `"$installer"` или имени скрипта): `--force`, `--install-dir ПАПКА`, `--chrome-version ВЕРСИЯ`. Они работают так же, как `-Force`, `-InstallDir` и `-ChromeVersion` ниже.
+
+Папка по умолчанию:
+
+```text
+~/Library/Application Support/ChatGPTforChromeInstaller/hehggadaopoacecdllhhajmbjkdcmajg
+```
+
+Скрипт копирует путь к папке в буфер обмена. Папка `~/Library` скрыта в диалогах Finder: после нажатия **Загрузить распакованное** нажмите **Cmd+Shift+G**, вставьте путь и подтвердите.
 
 ## Обновление и параметры
 

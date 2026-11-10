@@ -4,7 +4,7 @@
 
 ## Cannot install the ChatGPT Chrome extension?
 
-If Chrome Web Store is unavailable, the ChatGPT extension is not available in your region, or the Add to Chrome installation fails, this Windows PowerShell installer provides an alternative download path through Google update service. It prepares an unpacked copy of the official CRX with extension ID `hehggadaopoacecdllhhajmbjkdcmajg`, verifies the developer signature and keeps backups when updating. It is a community tool, not an OpenAI or Google product.
+If Chrome Web Store is unavailable, the ChatGPT extension is not available in your region, or the Add to Chrome installation fails, this installer (PowerShell for Windows, zsh script for macOS) provides an alternative download path through Google update service. It prepares an unpacked copy of the official CRX with extension ID `hehggadaopoacecdllhhajmbjkdcmajg`, verifies the developer signature and keeps backups when updating. It is a community tool, not an OpenAI or Google product.
 
 The method requires Google's package service to remain reachable. It does not guarantee a bypass of regional restrictions or access to ChatGPT itself.
 
@@ -53,6 +53,32 @@ Paste the entire block into PowerShell. It downloads the latest installer from t
 ```
 
 This executes code from the repository's `main` branch. `ExecutionPolicy Bypass` applies only to the child process and does not change the saved execution policy. Append `-Force` or `-InstallDir 'C:\Install\ChatGPT\hehggadaopoacecdllhhajmbjkdcmajg'` after `-File $installer` to pass options. Rerun the block to update, then click **Reload** in Chrome. For the first installation, complete the **Load unpacked** step above.
+
+## macOS
+
+A separate script, `Install-Update-ChatGPT-ChromeExtension-macOS.sh`, performs the same steps and checks on macOS. It uses only tools shipped with macOS (`zsh`, `curl`, `openssl`, `perl`, `unzip`); PowerShell is not needed. Chrome is detected in `/Applications` or `~/Applications`.
+
+Paste into Terminal to download and run the latest installer; the temporary file is deleted afterwards:
+
+```bash
+installer="$(mktemp -t chatgpt-installer)" && curl -fsSL --proto '=https' -o "$installer" 'https://raw.githubusercontent.com/Const-NW/ChatGPTforChromeInstaller/main/Install-Update-ChatGPT-ChromeExtension-macOS.sh' && zsh "$installer"; rm -f "$installer"
+```
+
+From a downloaded copy of the repository:
+
+```bash
+zsh ./Install-Update-ChatGPT-ChromeExtension-macOS.sh
+```
+
+Options (append after `"$installer"` or the script name): `--force`, `--install-dir DIR`, `--chrome-version VERSION`. They behave like `-Force`, `-InstallDir` and `-ChromeVersion` below.
+
+Default folder:
+
+```text
+~/Library/Application Support/ChatGPTforChromeInstaller/hehggadaopoacecdllhhajmbjkdcmajg
+```
+
+The script copies the folder path to the clipboard. `~/Library` is hidden in Finder dialogs: after clicking **Load unpacked**, press **Cmd+Shift+G**, paste the path and confirm.
 
 ## Updates and options
 
