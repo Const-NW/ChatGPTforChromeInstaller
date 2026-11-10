@@ -267,9 +267,12 @@ install_extension() {
     [[ -n $target && $target != / ]] || die 'InstallDir must not be the filesystem root.'
     parent=${target:h}
     # Reject symlinks in the destination ancestry before moving anything.
+    # Root-owned system links such as /tmp -> /private/tmp cannot be replaced by users and are allowed.
     path_=$target
     while [[ $path_ != / ]]; do
-        [[ -L $path_ ]] && die "Install path contains a symbolic link: $path_"
+        if [[ -L $path_ && $(/usr/bin/stat -f %u -- "$path_") != 0 ]]; then
+            die "Install path contains a symbolic link: $path_"
+        fi
         path_=${path_:h}
     done
     /bin/mkdir -p -- "$parent" || die "Cannot create $parent"
